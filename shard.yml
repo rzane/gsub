@@ -1,0 +1,13 @@
+name: gsub
+version: 0.1.0
+
+authors:
+  - Ray Zane <ray@promptworks.com>
+
+targets:
+  gsub:
+    main: src/gsub.cr
+
+crystal: 0.22.0
+
+license: MIT
