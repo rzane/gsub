@@ -4,7 +4,7 @@ module Gsub
 
     def initialize
       @includes = [Dir.current] of String
-      @excludes = [] of String
+      @excludes = [] of Regex
     end
 
     def add(spec : String)
@@ -12,7 +12,7 @@ module Gsub
     end
 
     def remove(spec : String)
-      @excludes << spec
+      @excludes << Regex.new(spec)
     end
 
     def each(&block : (String) ->)
@@ -25,12 +25,16 @@ module Gsub
       end
     end
 
+    private def excluded?(file)
+      @excludes.none? { |ex| file =~ ex }
+    end
+
     private def expand(glob, &block : (String) ->)
       if File.directory?(glob)
         Dir.glob(File.join(glob, "*")).each do |path|
           expand(path, &block)
         end
-      else
+      elsif !excluded?(glob)
         block.call(glob)
       end
     end
