@@ -9,7 +9,7 @@ You can grab a binary release from the [releases](https://github.com/rzane/gsub/
 Here's a one-liner:
 
 ```sh
-$ curl -L https://github.com/rzane/gsub/releases/download/0.1.0/gsub-0.1.0_darwin_x86_64.tar.gz | tar xvf - -C /usr/local
+$ curl -L https://github.com/rzane/gsub/releases/download/0.1.1/gsub-0.1.1_darwin_x86_64.tar.gz | tar xvf - -C /usr/local
 ```
 
 Currently, binary releases are only available for Darwin. If you're on Linux, you'll have to build from source.
@@ -35,11 +35,11 @@ $ gsub 'foo' --replace bar
 # Find occurances of `foo` in the `app` and `lib` directories
 $ gsub foo app lib
 
-# Find with globs
-$ gsub foo 'spec/**/*_spec.rb'
+# Specify paths
+$ gsub foo 'spec/**/*_spec.rb' 'app/**/*.rb'
 
-# Exclude files matching a regex
-$ gsub foo 'spec/**/*_spec.rb' --exclude 'foo_spec\.rb' --exclude 'bar_(\w+)_spec\.rb'
+# Exclude files from paths
+$ gsub foo 'spec/**/*_spec.rb' --exclude 'spec/foo_spec.rb' --exclude 'spec/bar_*_spec.rb'
 ```
 
 ## Development
