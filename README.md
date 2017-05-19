@@ -4,7 +4,9 @@ A CLI program to do find and replace!
 
 ## Installation
 
-TODO
+You can grab a binary release from the [releases](https://github.com/rzane/gsub/releases) tab. Install it somewhere on your `PATH`.
+
+Currently, binary releases are only available for Darwin. If you're on Linux, you'll have to build from source.
 
 ## Usage
 

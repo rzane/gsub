@@ -5,6 +5,6 @@ ARCH=$(shell uname -m)
 release:
 		shards build --production
 		mkdir -p releases
-		gzip -c bin/gsub > releases/gsub-$(VERSION)_$(OS)_$(ARCH).gz
+		tar -czvf releases/gsub-$(VERSION)_$(OS)_$(ARCH).tar.gz bin/gsub
 
 .PHONY: release
