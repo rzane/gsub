@@ -4,8 +4,6 @@ module Gsub
   struct View
     getter :config
 
-    ARROW = "->".colorize(:blue)
-
     def initialize(@config : Gsub::Config)
     end
 
@@ -17,6 +15,10 @@ module Gsub
       (number + 1).to_s.colorize(:yellow)
     end
 
+    def space(number)
+      " " * (number.to_s.chars.size + 1)
+    end
+
     def match(text)
       text.gsub(config.find) do |m|
         m.colorize(:black).on_yellow
@@ -24,7 +26,7 @@ module Gsub
     end
 
     def replace(text)
-      text.colorize(:light_red)
+      text.colorize(:magenta)
     end
 
     def matches(path : String, data : Scanner::Matchset)
@@ -34,6 +36,8 @@ module Gsub
       data.each do |i, source|
         puts "#{line(i)}:#{match(source)}"
       end
+
+      puts
     end
 
     def changeset(path : String, data : Scanner::Changeset)
@@ -41,8 +45,11 @@ module Gsub
       puts file(path)
 
       data.each do |i, (source, replacement)|
-        puts "#{line(i)}:#{match(source)} #{ARROW} #{replace(replacement)}"
+        puts "#{line(i)}:#{match(source)}"
+        puts "#{space(i)}#{replace(replacement)}"
       end
+
+      puts
     end
   end
 end
