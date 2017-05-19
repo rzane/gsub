@@ -1,10 +1,11 @@
 module Gsub
   class FileList
-    property glob : String
+    GLOB = "**/*"
+
+    setter :includes, :excludes
 
     def initialize
-      @glob = "**/*"
-      @includes = [] of String
+      @includes = [Dir.current] of String
       @excludes = [] of String
     end
 
@@ -17,18 +18,23 @@ module Gsub
     end
 
     def to_a
-      files = load_glob(@glob)
-      files += load_glob(@includes)
-      files -= load_glob(@excludes)
-      files
+      expand(@includes) - expand(@excludes)
     end
 
-    private def load_glob(spec : Array)
-      spec.flat_map { |s| load_glob(s) }
+    private def expand(specs : Array)
+      specs.flat_map do |spec|
+        if File.directory?(spec)
+          expand_directory(spec)
+        else
+          Dir.glob(spec)
+        end
+      end
     end
 
-    private def load_glob(spec : String)
-      Dir.glob(spec).reject { |path| File.directory?(path) }
+    private def expand_directory(spec : String)
+      Dir.glob(File.join(spec, GLOB)).reject do |path|
+        File.directory?(path)
+      end
     end
   end
 end

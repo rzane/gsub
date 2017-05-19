@@ -4,7 +4,7 @@ module Gsub
     end
 
     def matches(path, data)
-      puts path
+      puts path unless data.empty?
 
       data.each do |i, source|
         puts "#{i}: #{source}"
@@ -12,7 +12,7 @@ module Gsub
     end
 
     def changeset(path, data)
-      puts path
+      puts path unless data.empty?
 
       data.each do |i, (source, replacement)|
         puts "#{i}: #{source} -> #{replacement}"
