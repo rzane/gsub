@@ -11,7 +11,7 @@ module Gsub
     end
 
     def run
-      config.files.to_a.each do |path|
+      config.files.each do |path|
         process(path)
       end
     end

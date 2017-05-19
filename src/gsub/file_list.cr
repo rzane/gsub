@@ -1,7 +1,5 @@
 module Gsub
   class FileList
-    GLOB = "**/*"
-
     setter :includes, :excludes
 
     def initialize
@@ -17,23 +15,23 @@ module Gsub
       @excludes << spec
     end
 
-    def to_a
-      expand(@includes) - expand(@excludes)
-    end
-
-    private def expand(specs : Array)
-      specs.flat_map do |spec|
-        if File.directory?(spec)
-          expand_directory(spec)
+    def each(&block : (String) ->)
+      @includes.each do |glob|
+        if glob =~ /\*/
+          Dir.glob(glob).each(&block)
         else
-          Dir.glob(spec)
+          expand(glob, &block)
         end
       end
     end
 
-    private def expand_directory(spec : String)
-      Dir.glob(File.join(spec, GLOB)).reject do |path|
-        File.directory?(path)
+    private def expand(glob, &block : (String) ->)
+      if File.directory?(glob)
+        Dir.glob(File.join(glob, "*")).each do |path|
+          expand(path, &block)
+        end
+      else
+        block.call(glob)
       end
     end
   end
