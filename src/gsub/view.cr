@@ -7,8 +7,10 @@ module Gsub
     def initialize(@config : Gsub::Config)
     end
 
-    def file(text)
-      text.colorize(:green).bold
+    def filename(text)
+      text.sub(/^\.\//, "")
+          .sub(/^#{Dir.current}\//, "")
+          .colorize(:green).bold
     end
 
     def line(number)
@@ -31,7 +33,7 @@ module Gsub
 
     def matches(path : String, data : Scanner::Matchset)
       return if data.empty?
-      puts file(path)
+      puts filename(path)
 
       data.each do |i, source|
         puts "#{line(i)}:#{match(source)}"
@@ -42,7 +44,7 @@ module Gsub
 
     def changeset(path : String, data : Scanner::Changeset)
       return if data.empty?
-      puts file(path)
+      puts filename(path)
 
       data.each do |i, (source, replacement)|
         puts "#{line(i)}:#{match(source)}"
