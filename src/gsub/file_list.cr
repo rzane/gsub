@@ -18,23 +18,29 @@ module Gsub
     def each(&block : (String) ->)
       @includes.each do |glob|
         if glob =~ /\*/
-          Dir.glob(glob).each(&block)
+          normal_glob(glob).each(&block)
         else
-          expand(glob, &block)
+          incremental_glob(glob, &block)
         end
       end
     end
 
-    private def excluded?(file)
-      @excludes.none? { |ex| file =~ ex }
+    private def exclude?(file)
+      @excludes.any? { |ex| file =~ ex }
     end
 
-    private def expand(glob, &block : (String) ->)
+    private def normal_glob(glob)
+      Dir.glob(glob).reject do |f|
+        File.directory?(f) || exclude?(f)
+      end
+    end
+
+    private def incremental_glob(glob, &block : (String) ->)
       if File.directory?(glob)
         Dir.glob(File.join(glob, "*")).each do |path|
-          expand(path, &block)
+          incremental_glob(path, &block)
         end
-      elsif !excluded?(glob)
+      elsif !exclude?(glob)
         block.call(glob)
       end
     end
