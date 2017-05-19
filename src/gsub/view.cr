@@ -3,7 +3,7 @@ module Gsub
     def initialize(@config : Gsub::Config)
     end
 
-    def matches(path, data)
+    def matches(path : String, data : Scanner::Matchset)
       puts path unless data.empty?
 
       data.each do |i, source|
@@ -11,7 +11,7 @@ module Gsub
       end
     end
 
-    def changeset(path, data)
+    def changeset(path : String, data : Scanner::Changeset)
       puts path unless data.empty?
 
       data.each do |i, (source, replacement)|
