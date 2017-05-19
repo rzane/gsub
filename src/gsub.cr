@@ -1,5 +1,2 @@
-require "./gsub/*"
-
-module Gsub
-  # TODO Put your code here
-end
+require "./gsub/version"
+require "./gsub/cli"
