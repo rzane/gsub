@@ -6,6 +6,12 @@ A CLI program to do find and replace!
 
 You can grab a binary release from the [releases](https://github.com/rzane/gsub/releases) tab. Install it somewhere on your `PATH`.
 
+Here's a one-liner:
+
+```sh
+$ curl -L https://github.com/rzane/gsub/releases/download/0.1.0/gsub-0.1.0_darwin_x86_64.tar.gz | tar xvf - -C /usr/local
+```
+
 Currently, binary releases are only available for Darwin. If you're on Linux, you'll have to build from source.
 
 ## Usage
