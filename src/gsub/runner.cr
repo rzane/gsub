@@ -17,7 +17,7 @@ module Gsub
     end
 
     def process(path : String)
-      scanner = Scanner.read(config.find, path)
+      scanner = Scanner.new(path, config.find)
       matches = scanner.scan
 
       if config.replace?

@@ -27,26 +27,24 @@ module Gsub
     end
 
     def matches(path : String, data : Scanner::Matchset)
-      return if data.empty?
-      puts filename(path)
+      return if data.empty? && !config.debug?
 
+      puts filename(path)
       data.each do |i, source|
         puts match(i, source)
+        puts if i == data.size - 1
       end
-
-      puts
     end
 
     def changeset(path : String, data : Scanner::Changeset)
-      return if data.empty?
-      puts filename(path)
+      return if data.empty? && !config.debug?
 
+      puts filename(path)
       data.each do |i, (source, replacement)|
         puts match(i, source)
         puts replace(i, replacement)
+        puts if i == data.size - 1
       end
-
-      puts
     end
   end
 end

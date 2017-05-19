@@ -3,18 +3,16 @@ module Gsub
     alias Matchset = Hash(Int32, String)
     alias Changeset = Hash(Int32, Tuple(String, String))
 
-    def self.read(pattern, path)
-      new(pattern, File.read_lines(path))
-    end
-
-    def initialize(@pattern : Regex, @lines = [] of String)
+    def initialize(@path : String, @pattern : Regex)
     end
 
     def scan
       matchset = Matchset.new
 
-      @lines.each_with_index do |line, i|
+      i = 0
+      File.each_line(@path) do |line|
         matchset[i] = line if line =~ @pattern
+        i += 1
       end
 
       matchset
@@ -28,8 +26,10 @@ module Gsub
     end
 
     def commit(filename, changeset : Changeset)
+      lines = File.read_lines(@path)
+
       File.open(filename, "w+") do |f|
-        @lines.each_with_index do |line, i|
+        lines.each_with_index do |line, i|
           if change = changeset[i]?
             f.puts change[1]
           else

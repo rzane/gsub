@@ -4,7 +4,7 @@ module Gsub
 
     def initialize
       @includes = [Dir.current] of String
-      @excludes = [] of Regex
+      @excludes = [] of String
     end
 
     def add(spec : String)
@@ -12,37 +12,29 @@ module Gsub
     end
 
     def remove(spec : String)
-      @excludes << Regex.new(spec)
+      @excludes << spec
     end
 
     def each(&block : (String) ->)
       @includes.each do |glob|
-        if glob =~ /\*/
-          normal_glob(glob).each(&block)
-        else
-          incremental_glob(glob, &block)
+        Process.run("find", find_args(glob)) do |process|
+          process.output.each_line(&block)
         end
       end
     end
 
-    private def exclude?(file)
-      File.binary?(file) || @excludes.any? { |ex| file =~ ex }
+    private def find_args(glob)
+      [glob, "-type", "f"] + skip_excludes + skip_binaries
     end
 
-    private def normal_glob(glob)
-      Dir.glob(glob).reject do |f|
-        File.directory?(f) || exclude?(f)
+    private def skip_excludes
+      @excludes.flat_map do |exclude|
+        ["-not", "(", "-path", exclude, "-prune", ")"]
       end
     end
 
-    private def incremental_glob(glob, &block : (String) ->)
-      if File.directory?(glob)
-        Dir.glob(File.join(glob, "*")).each do |path|
-          incremental_glob(path, &block)
-        end
-      elsif !exclude?(glob)
-        block.call(glob)
-      end
+    private def skip_binaries
+      ["-exec", "grep", "-Iq", ".", "{}", ";", "-and", "-print"]
     end
   end
 end

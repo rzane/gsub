@@ -29,6 +29,10 @@ module Gsub
       replace? && @commit
     end
 
+    def debug?
+      ENV["DEBUG"]?
+    end
+
     def validate!
       if @find.blank?
         raise InvalidError.new("You didn't specify a pattern to --find.")
