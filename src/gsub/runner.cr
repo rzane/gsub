@@ -4,10 +4,10 @@ require "./view"
 
 module Gsub
   struct Runner
-    getter config
+    getter :config, :view
 
     def initialize(@config : Gsub::Config)
-      @view = View.new(config)
+      @view = View.new(@config)
     end
 
     def run
@@ -22,10 +22,10 @@ module Gsub
 
       if config.replace?
         changeset = scanner.compile(config.replace, matches)
-        @view.changeset(path, changeset)
+        view.changeset(path, changeset)
         scanner.commit(path, changeset) if config.commit?
       else
-        @view.matches(path, matches)
+        view.matches(path, matches)
       end
     end
   end
