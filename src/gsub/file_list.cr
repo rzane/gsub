@@ -26,7 +26,7 @@ module Gsub
     end
 
     private def exclude?(file)
-      @excludes.any? { |ex| file =~ ex }
+      File.binary?(file) || @excludes.any? { |ex| file =~ ex }
     end
 
     private def normal_glob(glob)
