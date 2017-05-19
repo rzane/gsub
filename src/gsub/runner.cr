@@ -17,14 +17,15 @@ module Gsub
     end
 
     def process(path)
-      scanner = Scanner.scan(path, config.find)
+      scanner = Scanner.read(config.find, path)
+      matches = scanner.scan
 
       if config.replace?
-        scanner.compile(config.replace)
-        @view.changeset(path, scanner.changeset)
-        scanner.commit(path) if config.commit?
+        changeset = scanner.compile(config.replace, matches)
+        @view.changeset(path, changeset)
+        scanner.commit(path, changeset) if config.commit?
       else
-        @view.matches(path, scanner.matches)
+        @view.matches(path, matches)
       end
     end
   end
