@@ -29,10 +29,6 @@ module Gsub
       replace? && @commit
     end
 
-    def backup?
-      @backup
-    end
-
     def validate!
       if @find.blank?
         raise InvalidError.new("You didn't specify a pattern to --find.")
