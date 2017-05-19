@@ -13,22 +13,17 @@ module Gsub
           .colorize(:green).bold
     end
 
-    def line(number)
-      (number + 1).to_s.colorize(:yellow)
-    end
-
-    def space(number)
-      " " * (number.to_s.chars.size + 1)
-    end
-
-    def match(text)
-      text.gsub(config.find) do |m|
+    def match(number, text)
+      source = text.gsub(config.find) do |m|
         m.colorize(:black).on_yellow
       end
+
+      "#{(number + 1).to_s.colorize(:yellow)}:#{source}"
     end
 
-    def replace(text)
-      text.colorize(:magenta)
+    def replace(number, text)
+      space = " " * (number.to_s.chars.size + 1)
+      "#{space}#{text.colorize(:magenta)}"
     end
 
     def matches(path : String, data : Scanner::Matchset)
@@ -36,7 +31,7 @@ module Gsub
       puts filename(path)
 
       data.each do |i, source|
-        puts "#{line(i)}:#{match(source)}"
+        puts match(i, source)
       end
 
       puts
@@ -47,8 +42,8 @@ module Gsub
       puts filename(path)
 
       data.each do |i, (source, replacement)|
-        puts "#{line(i)}:#{match(source)}"
-        puts "#{space(i)}#{replace(replacement)}"
+        puts match(i, source)
+        puts replace(i, replacement)
       end
 
       puts
