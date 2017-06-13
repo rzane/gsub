@@ -23,8 +23,8 @@ module Gsub
       opts.unknown_args do |args, _options|
         config.find = args[0] if args.size > 0
 
-        args[1..-1].each do |path|
-          config.files.add(path)
+        1.upto(args.size - 1) do |i|
+          config.files.add args[i]
         end
       end
     end
