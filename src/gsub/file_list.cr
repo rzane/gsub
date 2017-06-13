@@ -1,36 +1,46 @@
-class Dir
-  # I'm a very, very naughty boy.
-  # See: https://github.com/crystal-lang/crystal/blob/5370fafdd8744c9f5b8443bc35c65fc6926d2341/src/dir/glob.cr#L108
-  def self._expand_glob(glob)
-    glob2regex(glob)
-  end
-end
-
 module Gsub
   class FileList
-    setter :includes, :exclude_patterns
+    include Enumerable(String)
 
     def initialize
-      @includes = [Dir.current] of String
+      @includes = [] of String
       @exclude_patterns = [] of Regex
     end
 
     def add(spec : String)
-      @includes << spec
+      if spec =~ /\*/
+        @includes << spec
+      else
+        @includes << "#{spec}/**/*"
+      end
     end
 
     def remove(spec : String)
-      @exclude_patterns << Dir._expand_glob(spec)
+      @exclude_patterns << Regex.new(spec)
+    end
+
+    def fallback_to(spec : String)
+      add(spec) if @includes.empty?
     end
 
     def each(&block : (String) ->)
       @includes.each do |glob|
         Dir.glob(glob) do |path|
+          next if directory?(path)
+          next if hidden?(path)
           next if excluded?(path)
           next if binary?(path)
           yield path
         end
       end
+    end
+
+    def directory?(path)
+      File.directory?(path)
+    end
+
+    def hidden?(path)
+      File.basename(path) =~ /^\./
     end
 
     def excluded?(path)

@@ -22,10 +22,14 @@ module Gsub
 
       opts.unknown_args do |args, _options|
         config.find = args[0] if args.size > 0
-        config.files.includes = args[1..-1] if args.size > 1
+
+        args[1..-1].each do |path|
+          config.files.add(path)
+        end
       end
     end
 
+    config.files.fallback_to Dir.current
     config.validate!
     runner = Runner.new(config)
     runner.run
